@@ -9,6 +9,6 @@
     "workbench.iconTheme": "vscode-icons",
     "workbench.colorTheme": "One Dark Pro Night Flat",
     "RainbowBrackets.depreciation-notice": false,
-    "java.home": "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path",
+    "java.home": "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath",
     "git.openRepositoryInParentFolders": "never"
 }
