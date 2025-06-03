@@ -57,6 +57,11 @@ public class GameDAO {
 
     public List<Game> filterAndSortGames(String genre, String sortBy) {
         List<Game> list = new ArrayList<>();
+        // Validasi sortBy agar tidak SQL Injection
+        List<String> allowedSort = Arrays.asList("popularity", "rating", "release_date");
+        if (!allowedSort.contains(sortBy)) {
+            sortBy = "popularity";
+        }
         String sql = "SELECT * FROM games WHERE genre = ? ORDER BY " + sortBy;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
