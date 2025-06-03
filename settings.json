@@ -1,0 +1,14 @@
+{
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "explorer.confirmPasteNative": false,
+    "explorer.confirmDragAndDrop": false,
+    "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
+    "explorer.confirmDelete": false,
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.colorTheme": "One Dark Pro Night Flat",
+    "RainbowBrackets.depreciation-notice": false,
+    "java.home": "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path",
+    "git.openRepositoryInParentFolders": "never"
+}
