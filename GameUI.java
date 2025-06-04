@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
 
 public class GameUI extends JFrame {
     public GameUI() {
@@ -11,10 +14,10 @@ public class GameUI extends JFrame {
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBackground(Color.LIGHT_GRAY); // Warna latar belakang untuk kenyamanan visual
+        mainPanel.setBackground(Color.LIGHT_GRAY);
 
         JScrollPane scrollPane = new JScrollPane(mainPanel);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Tambahkan kecepatan scroll
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
         GameDAO dao = new GameDAO();
@@ -27,14 +30,24 @@ public class GameUI extends JFrame {
                 gamePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 gamePanel.setBackground(Color.WHITE);
 
-                // Gambar
-                String imagePath = "images/" + g.getId() + ".png";
-                ImageIcon icon = new ImageIcon(imagePath);
-                Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                JLabel imageLabel = new JLabel(new ImageIcon(img));
+                // Gambar dari BLOB
+                JLabel imageLabel = new JLabel();
                 imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-                // Info singkat
+                try {
+                    if (g.getImage() != null) {
+                        ByteArrayInputStream bis = new ByteArrayInputStream(g.getImage());
+                        BufferedImage bImage = ImageIO.read(bis);
+                        Image scaledImage = bImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                        imageLabel.setIcon(new ImageIcon(scaledImage));
+                    } else {
+                        imageLabel.setText("Gambar tidak tersedia");
+                    }
+                } catch (Exception e) {
+                    imageLabel.setText("Gagal memuat gambar");
+                }
+
+                // Info game
                 JLabel titleLabel = new JLabel("<html><div style='text-align:center;'><b>" + g.getName() + "</b><br>" +
                         "Rating: " + g.getRating() + "<br>" +
                         "Genre: " + g.getGenre() + "<br>" +
@@ -43,7 +56,6 @@ public class GameUI extends JFrame {
                 titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
                 titleLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
-                // Deskripsi / sinopsis
                 JTextArea descriptionArea = new JTextArea(g.getDescription());
                 descriptionArea.setWrapStyleWord(true);
                 descriptionArea.setLineWrap(true);

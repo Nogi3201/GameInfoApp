@@ -6,10 +6,11 @@ public class Game {
     private String releaseDate;
     private int popularity;
     private String description;
+    private byte[] image; // Tambahan untuk menyimpan gambar dari database
 
     public Game() {}
 
-    public Game(int id, String name, String genre, float rating, String releaseDate, int popularity, String description) {
+    public Game(int id, String name, String genre, float rating, String releaseDate, int popularity, String description, byte[] image) {
         this.id = id;
         this.name = name;
         this.genre = genre;
@@ -17,6 +18,7 @@ public class Game {
         this.releaseDate = releaseDate;
         this.popularity = popularity;
         this.description = description;
+        this.image = image;
     }
 
     // Getter dan Setter
@@ -41,6 +43,9 @@ public class Game {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    public byte[] getImage() { return image; }
+    public void setImage(byte[] image) { this.image = image; }
+
     @Override
     public String toString() {
         return "Game{" +
@@ -51,6 +56,7 @@ public class Game {
                 ", releaseDate='" + releaseDate + "'" +
                 ", popularity=" + popularity +
                 ", description='" + description + "'" +
+                ", image=" + (image != null ? image.length + " bytes" : "null") +
                 '}';
     }
 }
