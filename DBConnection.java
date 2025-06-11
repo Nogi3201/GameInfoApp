@@ -5,12 +5,11 @@ import java.sql.SQLException;
 public class DBConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/game_info_db?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = ""; 
+    private static final String PASSWORD = "";
 
     public static Connection connect() {
         try {
-            // Tidak wajib lagi di Java 8+, tapi tetap aman untuk kompatibilitas
-            Class.forName("com.mysql.cj.jdbc.Driver"); 
+            Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
             System.out.println("Driver JDBC tidak ditemukan.");

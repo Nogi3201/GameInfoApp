@@ -1,3 +1,9 @@
+import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.io.ByteArrayInputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 public class Game {
     private int id;
     private String name;
@@ -6,7 +12,7 @@ public class Game {
     private String releaseDate;
     private int popularity;
     private String description;
-    private byte[] image; // Tambahan untuk menyimpan gambar dari database
+    private byte[] image; // Menyimpan gambar sebagai byte array (dari database)
 
     public Game() {}
 
@@ -45,6 +51,20 @@ public class Game {
 
     public byte[] getImage() { return image; }
     public void setImage(byte[] image) { this.image = image; }
+
+    // Method utilitas untuk konversi byte[] ke ImageIcon (untuk ditampilkan di Swing)
+    public ImageIcon getImageIcon(int width, int height) {
+        if (image != null) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(image));
+                Image scaledImage = bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     @Override
     public String toString() {

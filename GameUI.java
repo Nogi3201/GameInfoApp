@@ -1,9 +1,6 @@
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
 
 public class GameUI extends JFrame {
     public GameUI() {
@@ -27,24 +24,20 @@ public class GameUI extends JFrame {
             for (Game g : games) {
                 JPanel gamePanel = new JPanel();
                 gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-                gamePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                gamePanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY, 1),
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                ));
                 gamePanel.setBackground(Color.WHITE);
 
-                // Gambar dari BLOB
+                // Gambar dari database menggunakan getImageIcon()
                 JLabel imageLabel = new JLabel();
                 imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-                try {
-                    if (g.getImage() != null) {
-                        ByteArrayInputStream bis = new ByteArrayInputStream(g.getImage());
-                        BufferedImage bImage = ImageIO.read(bis);
-                        Image scaledImage = bImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                        imageLabel.setIcon(new ImageIcon(scaledImage));
-                    } else {
-                        imageLabel.setText("Gambar tidak tersedia");
-                    }
-                } catch (Exception e) {
-                    imageLabel.setText("Gagal memuat gambar");
+                ImageIcon icon = g.getImageIcon(150, 150);
+                if (icon != null) {
+                    imageLabel.setIcon(icon);
+                } else {
+                    imageLabel.setText("Gambar tidak tersedia");
                 }
 
                 // Info game
@@ -64,7 +57,9 @@ public class GameUI extends JFrame {
                 descriptionArea.setAlignmentX(Component.CENTER_ALIGNMENT);
 
                 gamePanel.add(imageLabel);
+                gamePanel.add(Box.createRigidArea(new Dimension(0, 10)));
                 gamePanel.add(titleLabel);
+                gamePanel.add(Box.createRigidArea(new Dimension(0, 5)));
                 gamePanel.add(descriptionArea);
 
                 mainPanel.add(gamePanel);
@@ -76,7 +71,7 @@ public class GameUI extends JFrame {
             mainPanel.add(kosong);
         }
 
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); // Tengah layar
         setVisible(true);
     }
 }
