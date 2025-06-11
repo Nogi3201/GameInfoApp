@@ -1,15 +1,56 @@
 import java.awt.*;
+import java.awt.event.*;
 import java.util.List;
 import javax.swing.*;
 
 public class GameUI extends JFrame {
+    private JPanel mainPanel;
+    private GameDAO dao;
+
     public GameUI() {
         setTitle("Aplikasi Info Game");
         setSize(600, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel mainPanel = new JPanel();
+        dao = new GameDAO();
+
+        // ======== MENU ========
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+
+        JMenuItem tambahItem = new JMenuItem("Tambah Game");
+        tambahItem.addActionListener(e -> new TambahGameForm());
+
+        JMenuItem refreshItem = new JMenuItem("Refresh");
+        refreshItem.addActionListener(e -> loadGames(""));
+
+        JMenuItem keluarItem = new JMenuItem("Keluar");
+        keluarItem.addActionListener(e -> System.exit(0));
+
+        menu.add(tambahItem);
+        menu.add(refreshItem);
+        menu.add(keluarItem);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+
+        // ======== PENCARIAN ========
+        JPanel searchPanel = new JPanel(new FlowLayout());
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Cari");
+
+        searchButton.addActionListener(e -> {
+            String keyword = searchField.getText();
+            loadGames(keyword);
+        });
+
+        searchPanel.add(new JLabel("Cari Game:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        add(searchPanel, BorderLayout.NORTH);
+
+        // ======== PANEL UTAMA ========
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(Color.LIGHT_GRAY);
 
@@ -17,8 +58,17 @@ public class GameUI extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
-        GameDAO dao = new GameDAO();
-        List<Game> games = dao.getPopularGames();
+        // Load awal semua game populer
+        loadGames("");
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    // ======= METHOD UNTUK LOAD GAME ========
+    private void loadGames(String keyword) {
+        mainPanel.removeAll();
+
+        List<Game> games = keyword.isEmpty() ? dao.getPopularGames() : dao.searchGames(keyword);
 
         if (games != null && !games.isEmpty()) {
             for (Game g : games) {
@@ -30,17 +80,12 @@ public class GameUI extends JFrame {
                 ));
                 gamePanel.setBackground(Color.WHITE);
 
-                // Gambar dari database menggunakan getImageIcon()
                 JLabel imageLabel = new JLabel();
                 imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
                 ImageIcon icon = g.getImageIcon(150, 150);
-                if (icon != null) {
-                    imageLabel.setIcon(icon);
-                } else {
-                    imageLabel.setText("Gambar tidak tersedia");
-                }
+                imageLabel.setIcon(icon != null ? icon : new ImageIcon());
+                if (icon == null) imageLabel.setText("Gambar tidak tersedia");
 
-                // Info game
                 JLabel titleLabel = new JLabel("<html><div style='text-align:center;'><b>" + g.getName() + "</b><br>" +
                         "Rating: " + g.getRating() + "<br>" +
                         "Genre: " + g.getGenre() + "<br>" +
@@ -71,7 +116,7 @@ public class GameUI extends JFrame {
             mainPanel.add(kosong);
         }
 
-        setLocationRelativeTo(null); // Tengah layar
-        setVisible(true);
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }
 }

@@ -7,7 +7,7 @@ public class GameDAO {
     private Connection conn;
 
     public GameDAO() {
-        conn = DBConnection.connect(); // FIXED: gunakan .connect() sesuai yang didefinisikan
+        conn = DBConnection.getConnection(); // pastikan DBConnection punya method ini
     }
 
     // Ambil daftar game populer (10 game berdasarkan popularity tertinggi)
@@ -28,6 +28,51 @@ public class GameDAO {
         }
 
         return list;
+    }
+
+    // 🔍 Tambahkan fitur search game
+    public List<Game> searchGames(String keyword) {
+        List<Game> list = new ArrayList<>();
+        String sql = "SELECT * FROM games WHERE name LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + keyword + "%");
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Game g = mapResultSetToGame(rs);
+                    list.add(g);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // ➕ Tambahkan fitur menambah game
+    public boolean addGame(Game g) {
+        String sql = "INSERT INTO games (name, genre, rating, release_date, popularity, description, image) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, g.getName());
+            stmt.setString(2, g.getGenre());
+            stmt.setFloat(3, g.getRating());
+            stmt.setString(4, g.getReleaseDate());
+            stmt.setInt(5, g.getPopularity());
+            stmt.setString(6, g.getDescription());
+            stmt.setBytes(7, g.getImage());
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Konversi ResultSet ke objek Game
