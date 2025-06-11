@@ -87,7 +87,7 @@ public class TambahGameForm extends JFrame {
         String releaseDate = releaseDateField.getText();
         String description = descriptionArea.getText();
 
-        try (Connection conn = DBConnection.getConnection()) {
+        try (Connection conn = DBConnection.connect()) {
             String sql = "INSERT INTO games (name, genre, rating, release_date, popularity, description, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
 
